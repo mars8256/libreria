@@ -18,62 +18,60 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.bds.exception.ModeloNotFoundException;
-import com.bds.model.Bodega;
-import com.bds.service.IBodegaService;
+import com.bds.model.CategoriaProducto;
+import com.bds.service.ICategoriaProductoService;
 
 @RestController
-@RequestMapping("/bodegas")
-public class BodegaController {
+@RequestMapping("/cat-producto")
+public class CategoriaProductoController {
 
 	
 	@Autowired
-	private IBodegaService service;
+	private ICategoriaProductoService service;
 	
 	//LISTAR
 	@GetMapping(produces = "application/json")
-	public ResponseEntity<List<Bodega>> listar(){
-		return new ResponseEntity<List<Bodega>>(service.listar(), HttpStatus.OK);
-		//return service.listar();
+	public ResponseEntity<List<CategoriaProducto>> listar(){
+		return new ResponseEntity<List<CategoriaProducto>>(service.listar(), HttpStatus.OK);
 	}
 	
 	//LISTAR POR ID
 	@GetMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Bodega> listarPorId(@PathVariable("id") Integer id){
-		Optional<Bodega> bod = service.listarPorId(id);
-		if(!bod.isPresent()) {
+	public ResponseEntity<CategoriaProducto> listarPorId(@PathVariable("id") Integer id){
+		Optional<CategoriaProducto> catProd = service.listarPorId(id);
+		if(catProd == null) {
 			throw new ModeloNotFoundException("Id no encontrado:" + id);
 		}
-		return new ResponseEntity<Bodega>(bod.get(),HttpStatus.OK);
-		//return new ResponseEntity<Orden>(orden.get(),HttpStatus.OK);
+		return new ResponseEntity<CategoriaProducto>(catProd.get(),HttpStatus.OK);
+		
 	}
 	
 	//REGISTRAR
 	@PostMapping(produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Object> registrar(@RequestBody Bodega bod) {
-		Bodega bodega = new Bodega();
-		bodega = service.registrar(bod);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(bodega.getBodegaId()).toUri();
+	public ResponseEntity<CategoriaProducto> registrar(@RequestBody CategoriaProducto catProd) {
+		CategoriaProducto categoriaProducto = new CategoriaProducto();
+		categoriaProducto = service.registrar(catProd);
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(categoriaProducto.getIdCategoriaProducto()).toUri();
 		return ResponseEntity.created(location).build();
-		//return service.registrar(bodega);
 	}
 	
 	//MODIFICAR
 	@PutMapping(value="/{id}", produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Object> modificar(@RequestBody Bodega bodega) {
-		service.modificar(bodega);
+	public ResponseEntity<Object> modificar(@RequestBody CategoriaProducto catProd) {
+		service.modificar(catProd);
 		return new ResponseEntity<Object>(HttpStatus.OK);
-		//return service.modificar(bodega);
 	}
 	
 	//ELIMINAR
 	@DeleteMapping(value = "/{id}")
 	public void eliminar(@PathVariable("id") Integer id) {
-		Optional<Bodega> bod = service.listarPorId(id);
-		if(!bod.isPresent()) {
+		Optional<CategoriaProducto> cat = service.listarPorId(id);
+		if(cat == null) {
 			throw new ModeloNotFoundException("id no encontrado: " + id);
 		}else {
 			service.eliminar(id);
 		}
-		//service.eliminar(id);
+	
 	}
+	
 }

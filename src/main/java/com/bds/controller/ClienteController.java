@@ -18,62 +18,60 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.bds.exception.ModeloNotFoundException;
-import com.bds.model.Bodega;
-import com.bds.service.IBodegaService;
+import com.bds.model.Cliente;
+import com.bds.service.IClienteService;
 
 @RestController
-@RequestMapping("/bodegas")
-public class BodegaController {
+@RequestMapping("/cliente")
+public class ClienteController {
 
 	
 	@Autowired
-	private IBodegaService service;
+	private IClienteService service;
 	
 	//LISTAR
 	@GetMapping(produces = "application/json")
-	public ResponseEntity<List<Bodega>> listar(){
-		return new ResponseEntity<List<Bodega>>(service.listar(), HttpStatus.OK);
+	public ResponseEntity<List<Cliente>> listar(){
+		return new ResponseEntity<List<Cliente>>(service.listar(), HttpStatus.OK);
 		//return service.listar();
 	}
 	
 	//LISTAR POR ID
 	@GetMapping(value = "/{id}", produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Bodega> listarPorId(@PathVariable("id") Integer id){
-		Optional<Bodega> bod = service.listarPorId(id);
-		if(!bod.isPresent()) {
+	public ResponseEntity<Cliente> listarPorId(@PathVariable("id") Integer id){
+		Optional<Cliente> cli = service.listarPorId(id);
+		if(cli == null) {
 			throw new ModeloNotFoundException("Id no encontrado:" + id);
 		}
-		return new ResponseEntity<Bodega>(bod.get(),HttpStatus.OK);
-		//return new ResponseEntity<Orden>(orden.get(),HttpStatus.OK);
+		return new ResponseEntity<Cliente>(cli.get(),HttpStatus.OK);
+		
 	}
 	
 	//REGISTRAR
 	@PostMapping(produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Object> registrar(@RequestBody Bodega bod) {
-		Bodega bodega = new Bodega();
-		bodega = service.registrar(bod);
-		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(bodega.getBodegaId()).toUri();
+	public ResponseEntity<Cliente> registrar(@RequestBody Cliente cli) {
+		Cliente cliente = new Cliente();
+		cliente = service.registrar(cli);
+		URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(cliente.getId()).toUri();
 		return ResponseEntity.created(location).build();
-		//return service.registrar(bodega);
 	}
 	
 	//MODIFICAR
 	@PutMapping(value="/{id}", produces = "application/json", consumes = "application/json")
-	public ResponseEntity<Object> modificar(@RequestBody Bodega bodega) {
-		service.modificar(bodega);
+	public ResponseEntity<Object> modificar(@RequestBody Cliente cliente) {
+		service.modificar(cliente);
 		return new ResponseEntity<Object>(HttpStatus.OK);
-		//return service.modificar(bodega);
 	}
 	
 	//ELIMINAR
 	@DeleteMapping(value = "/{id}")
 	public void eliminar(@PathVariable("id") Integer id) {
-		Optional<Bodega> bod = service.listarPorId(id);
-		if(!bod.isPresent()) {
+		Optional<Cliente> cli = service.listarPorId(id);
+		if(cli == null) {
 			throw new ModeloNotFoundException("id no encontrado: " + id);
 		}else {
 			service.eliminar(id);
 		}
-		//service.eliminar(id);
+	
 	}
 }

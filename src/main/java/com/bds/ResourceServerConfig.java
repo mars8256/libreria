@@ -33,12 +33,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/v2/api-docs/**" ).authenticated()
-                .antMatchers("/consultas/**" ).authenticated()                
-                .antMatchers("/especialidades/**" ).authenticated()
-                .antMatchers("/examenes/**" ).authenticated()
-                .antMatchers("/medicos/**" ).authenticated()
-                .antMatchers("/menus/**" ).authenticated()
-                .antMatchers("/consultaexamenes/**" ).authenticated()
+                .antMatchers("/salida-detalle/**" ).authenticated()                
+                .antMatchers("/salida/**" ).authenticated()
+                .antMatchers("/ingreso-detalle/**" ).authenticated()
+                .antMatchers("/ingreso/**" ).authenticated()
+                .antMatchers("/clientes/**" ).authenticated()
+                .antMatchers("/productos/**" ).authenticated()
                 .antMatchers("/bodegas/**" ).authenticated();
     }    
 
